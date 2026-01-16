@@ -1,5 +1,5 @@
 """
-币哨监控系统 - 主程序
+鹰眼监控系统 - 主程序
 """
 import asyncio
 import os
@@ -13,7 +13,7 @@ from logging_config import setup_logging
 setup_logging(
     log_level=os.getenv('LOG_LEVEL', 'INFO'),
     log_dir="logs",
-    app_name="coinwhistle"
+    app_name="hawkeye"
 )
 
 from loguru import logger
@@ -25,8 +25,8 @@ from models import Alert
 from config import UserConfig
 
 
-class CoinWhistleSystem:
-    """币哨监控系统"""
+class HawkEyeSystem:
+    """鹰眼监控系统"""
     
     def __init__(self):
         # 获取配置
@@ -54,7 +54,7 @@ class CoinWhistleSystem:
         self.binance.on_spread_update = self._on_spread_update
         self.binance.on_orderbook_update = self.alert_engine.check_orderbook_for_all_users
         
-        logger.info("🚨 币哨监控系统初始化完成")
+        logger.info("🦅 鹰眼监控系统初始化完成")
     
     async def _handle_alert(self, alert: Alert, user_config: UserConfig):
         """处理报警 - 发送给用户"""
@@ -70,7 +70,7 @@ class CoinWhistleSystem:
     
     async def start(self):
         """启动系统"""
-        logger.info("🚨 币哨监控系统启动中...")
+        logger.info("🦅 鹰眼监控系统启动中...")
         
         try:
             # 启动通知系统
@@ -102,7 +102,7 @@ class CoinWhistleSystem:
 
 
 async def main():
-    system = CoinWhistleSystem()
+    system = HawkEyeSystem()
     
     try:
         await system.start()

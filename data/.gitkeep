@@ -1,2 +1,0 @@
-# 此文件用于保留 data 目录结构
-# 实际的 users.json 文件不会提交到 git（已在 .gitignore 中排除）

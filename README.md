@@ -1,16 +1,16 @@
-# 币哨监控系统 - README
+# 鹰眼监控系统 - README
 
 <div align="center">
-  <img src="logo.jpg" alt="币哨监控" width="120" height="120" style="border-radius: 20px;">
+  <img src="logo.jpg" alt="鹰眼监控" width="120" height="120" style="border-radius: 20px;">
   
-  # 🚨 币哨监控 (CoinWhistle Monitor)
+  # 🦅 鹰眼监控 (HawkEye Monitor)
   
   **币安市场实时报警系统 | Binance Real-time Alert System**
   
   [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
   [![Telegram](https://img.shields.io/badge/Telegram-Bot-blue.svg)](https://core.telegram.org/bots)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-  [![Version](https://img.shields.io/badge/Version-1.3-orange.svg)](https://github.com/yourusername/coinwhistle-monitor)
+  [![Version](https://img.shields.io/badge/Version-1.3-orange.svg)](https://github.com/yourusername/hawkeye-monitor)
   
   [🌐 官网](https://yingyan.lol) · [🤖 Telegram Bot](https://t.me/yingyanjk_bot) · [💬 交流群](https://t.me/+mMYvl04GeTIwODdl)
   
@@ -24,7 +24,7 @@
 
 ## 📖 简介
 
-币哨监控是一个 **7×24 小时**运行的币安市场实时监控系统，通过 Telegram 机器人推送报警消息。
+鹰眼监控是一个 **7×24 小时**运行的币安市场实时监控系统，通过 Telegram 机器人推送报警消息。
 
 支持监控价格异动、现货合约差价、资金费率、成交量暴增、**巨量挂单**等多种市场异常情况，帮助交易者及时捕捉市场机会。
 
@@ -101,7 +101,7 @@ docker-compose up -d
 ## 📁 项目结构
 
 ```
-coinwhistle-monitor/
+hawkeye-monitor/
 ├── main.py              # 主程序入口
 ├── config.py            # 配置管理、用户管理
 ├── models.py            # 数据模型定义
@@ -157,7 +157,7 @@ coinwhistle-monitor/
 
 ## ⚡ 升级穿透机制
 
-传统的冷却机制会导致在冷却期内错过重要行情。币哨采用**智能升级穿透**：
+传统的冷却机制会导致在冷却期内错过重要行情。鹰眼采用**智能升级穿透**：
 
 ```
 10:00  +9%  警告   ✓ 发送    # 首次触发
@@ -283,9 +283,9 @@ coinwhistle-monitor/
 version: '3.8'
 
 services:
-  coinwhistle:
+  hawkeye:
     build: .
-    container_name: coinwhistle-monitor
+    container_name: hawkeye-monitor
     restart: unless-stopped
     environment:
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
@@ -357,7 +357,7 @@ python-dotenv>=1.0.0
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                      币哨监控系统                            │
+│                      鹰眼监控系统                            │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐     │
@@ -469,6 +469,6 @@ mypy .
   
   **如果觉得有用，请给个 ⭐ Star！**
   
-  Made with ❤️ by [CoinWhistle Team](https://coinwhistle.lol)
+  Made with ❤️ by [YingYan Team](https://yingyan.lol)
   
 </div

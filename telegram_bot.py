@@ -21,7 +21,7 @@ from notifier import MultiUserNotifier
 from models import MarketType
 
 if TYPE_CHECKING:
-    from main import CoinWhistleSystem
+    from main import HawkEyeSystem
 
 
 class TelegramBot:
@@ -31,12 +31,12 @@ class TelegramBot:
         self.token = token
         self.notifier = notifier
         self.app: Optional[Application] = None
-        self.system: Optional['CoinWhistleSystem'] = None
+        self.system: Optional['HawkEyeSystem'] = None
         
         # 临时静音记录: {user_id: {symbol: unmute_time}}
         self.muted_symbols: Dict[str, Dict[str, datetime]] = {}
     
-    def set_system(self, system: 'CoinWhistleSystem'):
+    def set_system(self, system: 'HawkEyeSystem'):
         self.system = system
     
     async def start(self):
@@ -73,10 +73,11 @@ class TelegramBot:
             ("funding", self._cmd_funding),
             ("price", self._cmd_price),
             ("info", self._cmd_info),
+            # 管理员
+            ("admin", self._cmd_admin),
+            ("users", self._cmd_users),
+            ("broadcast", self._cmd_broadcast),
         ]
-        
-        # 动态加载管理员命令（如果存在）
-        self._load_admin_commands(commands)
         
         for cmd, handler in commands:
             self.app.add_handler(CommandHandler(cmd, handler))
@@ -92,25 +93,6 @@ class TelegramBot:
         asyncio.create_task(self._mute_cleanup_loop())
         
         logger.info("Telegram机器人已启动")
-    
-    def _load_admin_commands(self, commands: list):
-        """动态加载管理员命令（如果 admin_commands.py 存在）"""
-        try:
-            import admin_commands
-            admin_cmds = admin_commands.AdminCommands(self)
-            
-            # 将管理员命令添加到命令列表
-            admin_commands_list = [
-                ("admin", admin_cmds.cmd_admin),
-                ("users", admin_cmds.cmd_users),
-                ("broadcast", admin_cmds.cmd_broadcast),
-            ]
-            commands.extend(admin_commands_list)
-            logger.info("✅ 管理员命令已加载")
-        except ImportError:
-            logger.debug("管理员命令模块未找到，跳过加载")
-        except Exception as e:
-            logger.warning(f"加载管理员命令失败: {e}")
     
     async def stop(self):
         """停止机器人"""
@@ -801,7 +783,7 @@ class TelegramBot:
         ]
         
         await update.message.reply_text(
-            f"🚨 <b>欢迎使用币哨监控系统 v1.3</b>\n\n"
+            f"🦅 <b>欢迎使用鹰眼监控系统 v1.3</b>\n\n"
             f"你好 <b>{user_config.username or '用户'}</b>！{reactivate_msg}\n\n"
             "📋 <b>快速开始:</b>\n"
             "• /menu - 控制面板\n"
@@ -827,7 +809,7 @@ class TelegramBot:
         ]
         
         help_text = """
-    🚨 <b>币哨监控系统 v1.3 - 帮助</b>
+    🦅 <b>鹰眼监控系统 v1.3 - 帮助</b>
     
     <b>📊 排行榜</b>
     /top - 排行榜菜单
@@ -876,7 +858,7 @@ class TelegramBot:
         effective_mode = user_config.get_effective_mode()
         
         await update.message.reply_text(
-            f"🚨 <b>币哨控制面板</b>\n\n"
+            f"🦅 <b>鹰眼控制面板</b>\n\n"
             f"<b>监控:</b> {user_config.watch_mode}\n"
             f"<b>灵敏度:</b> {user_config.profile.value}\n"
             f"<b>报警模式:</b> {effective_mode.value} {'🌙' if is_night else ''}\n"
@@ -1285,9 +1267,65 @@ class TelegramBot:
         )
     
     # ================== 管理员命令 ==================
-    # 管理员命令已移至 admin_commands.py 模块
-    # 如果存在 admin_commands.py 文件，会自动加载管理员命令
-    # 参见 _load_admin_commands() 方法
+    async def _cmd_admin(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        user_config = self._get_user(update)
+        if not user_manager.is_admin(user_config.user_id):
+            await update.message.reply_text("❌ 无权限")
+            return
+        
+        users = user_manager.get_all_users()
+        active = len([u for u in users if u.is_active])
+        
+        engine_stats = {}
+        if self.system and hasattr(self.system, 'alert_engine'):
+            engine_stats = self.system.alert_engine.get_stats()
+        
+        await update.message.reply_text(
+            f"👑 <b>管理员面板</b>\n\n"
+            f"<b>用户:</b> {len(users)} (活跃: {active})\n\n"
+            f"<b>报警统计:</b>\n"
+            f"• 总报警: {engine_stats.get('total_alerts', 0)}\n"
+            f"• ⚡ 升级穿透: {engine_stats.get('escalation_count', 0)}\n"
+            f"• 活跃冷却: {engine_stats.get('active_cooldowns', 0)}\n\n"
+            f"/users - 用户列表\n"
+            f"/broadcast 消息 - 广播",
+            parse_mode=ParseMode.HTML
+        )
+    
+    async def _cmd_users(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        user_config = self._get_user(update)
+        if not user_manager.is_admin(user_config.user_id):
+            await update.message.reply_text("❌ 无权限")
+            return
+        
+        users = user_manager.get_all_users()
+        text = "👥 <b>用户列表</b>\n\n"
+        
+        for u in users[:20]:
+            status = "✅" if u.is_active else "❌"
+            admin = "👑" if u.is_admin else ""
+            tz = f"UTC{u.timezone_offset:+d}"
+            night = "🌙" if u.alert_mode.night.enabled else ""
+            text += f"{status}{admin}{night} {u.username or u.user_id[:8]} ({tz})\n"
+        
+        if len(users) > 20:
+            text += f"\n... 共 {len(users)} 个"
+        
+        await update.message.reply_text(text, parse_mode=ParseMode.HTML)
+    
+    async def _cmd_broadcast(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        user_config = self._get_user(update)
+        if not user_manager.is_admin(user_config.user_id):
+            await update.message.reply_text("❌ 无权限")
+            return
+        
+        message = ' '.join(context.args or [])
+        if not message:
+            await update.message.reply_text("用法: /broadcast <消息>")
+            return
+        
+        await self.notifier.broadcast(f"📢 <b>系统公告</b>\n\n{message}")
+        await update.message.reply_text("✅ 广播已发送")
     
     # ================== 回调处理 ==================
     async def _handle_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1784,7 +1822,7 @@ class TelegramBot:
         effective_mode = user_config.get_effective_mode()
         
         await message.edit_text(
-            f"🚨 <b>币哨控制面板</b>\n\n"
+            f"🦅 <b>鹰眼控制面板</b>\n\n"
             f"<b>监控:</b> {user_config.watch_mode}\n"
             f"<b>灵敏度:</b> {user_config.profile.value}\n"
             f"<b>报警模式:</b> {effective_mode.value} {'🌙' if is_night else ''}\n"
