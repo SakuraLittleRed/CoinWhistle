@@ -1,0 +1,48 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# 环境变量（不包含在镜像中，通过 docker-compose 传递）
+.env
+.env.local
+.env.*.local
+
+# 数据目录（通过 volume 挂载）
+data/
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 文档
+*.md
+DEPLOY.md
+README.md
+
+# 其他
+.DS_Store
+*.log
+.dockerignore
+docker-compose.yml
+ecosystem.config.js
+deploy.sh

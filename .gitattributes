@@ -1,0 +1,21 @@
+# 确保文本文件使用 LF 换行符
+* text=auto eol=lf
+
+# Python 文件
+*.py text eol=lf
+
+# Shell 脚本
+*.sh text eol=lf
+
+# 配置文件
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+
+# 二进制文件
+*.jpg binary
+*.png binary
+*.gif binary
+*.ico binary
+*.pdf binary

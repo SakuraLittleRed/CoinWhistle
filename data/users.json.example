@@ -1,0 +1,49 @@
+{
+  "_comment": "这是用户数据文件示例，实际运行时会自动创建 users.json",
+  "example_user_id": {
+    "user_id": "example_user_id",
+    "username": "example",
+    "chat_id": "example_user_id",
+    "is_active": true,
+    "is_admin": false,
+    "created_at": "",
+    "timezone_offset": 8,
+    "timezone_name": "北京/香港/台北",
+    "profile": "moderate",
+    "watch_mode": "all",
+    "whitelist": [],
+    "blacklist": [],
+    "min_volume_24h": 0,
+    "volume_filter_enabled": false,
+    "enable_big_order": true,
+    "alert_mode": {
+      "mode": "single",
+      "repeat": {
+        "enabled": false,
+        "interval_seconds": 10,
+        "max_repeats": 30,
+        "require_confirm": true
+      },
+      "night": {
+        "enabled": false,
+        "auto_switch": true,
+        "night_start": "23:00",
+        "night_end": "07:00",
+        "night_interval_seconds": 15,
+        "night_max_repeats": 20,
+        "night_add_email": true
+      }
+    },
+    "email": {
+      "enabled": false,
+      "to_addresses": []
+    },
+    "notify_channels": ["telegram"],
+    "enable_spot": true,
+    "enable_futures": true,
+    "enable_spread": true,
+    "enable_volume": true,
+    "enable_funding": false,
+    "cooldown_seconds": 300
+  }
+}
