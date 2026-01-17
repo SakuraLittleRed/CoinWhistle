@@ -37,34 +37,26 @@
 
 ### 环境要求
 
-- Python 3.10+
+- Docker 和 Docker Compose
 - Telegram Bot Token
 
 ### 安装
 
 ```bash
 # 克隆项目
-git clone <repository_url>
-cd <project_directory>
+git clone git@github.com:SakuraLittleRed/CoinWhistle.git
+cd CoinWhistle
 
-# 创建虚拟环境
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# 或 venv\Scripts\activate  # Windows
+# 复制环境变量模板
+cp .env.example .env
 
-# 安装依赖
-pip install -r requirements.txt
+# 编辑 .env 文件，配置必要的环境变量
+nano .env
 ```
 
 ### 配置
 
-```bash
-# 复制环境变量模板
-cp .env.example .env
-
-# 编辑 .env 文件
-nano .env
-```
+在 `.env` 文件中配置以下变量：
 
 ```env
 # 必填：Telegram Bot Token
@@ -83,11 +75,14 @@ SMTP_PASSWORD=your_app_password
 ### 运行
 
 ```bash
-# 直接运行
-python main.py
-
-# 或使用 Docker
+# 构建并启动容器（后台运行）
 docker-compose up -d
+
+# 查看日志
+docker-compose logs -f
+
+# 停止服务
+docker-compose down
 ```
 
 ---
