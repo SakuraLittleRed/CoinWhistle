@@ -1,6 +1,6 @@
 module.exports = {
   apps: [{
-    name: 'hawkeye',
+    name: 'coinwhistle',
     script: 'main.py',
     interpreter: './venv/bin/python',
     cwd: '/www/wwwroot/binance_alert',

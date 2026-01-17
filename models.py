@@ -277,7 +277,7 @@ class Alert:
     def to_email_subject(self) -> str:
         level_prefix = "🔥紧急 " if self.level.priority >= 3 else ""
         escalation = "⚡升级 " if self.data.get('is_escalation') else ""
-        return f"{level_prefix}{escalation}[鹰眼报警] {self.symbol} - {self.message[:30]}"
+        return f"{level_prefix}{escalation}[币哨报警] {self.symbol} - {self.message[:30]}"
     
     def to_email_html(self, prefix: str = "", user_tz_offset: int = 8) -> str:
         user_tz = timezone(timedelta(hours=user_tz_offset))
@@ -298,7 +298,7 @@ class Alert:
         html = f"""
         <div style="font-family: Arial; max-width: 600px; margin: 0 auto;">
             <div style="background: {color}; color: white; padding: 20px; text-align: center;">
-                <h1>{prefix}🦅 鹰眼报警</h1>
+                <h1>{prefix}🦅 币哨报警</h1>
                 <h2>{self.symbol}</h2>
             </div>
             {escalation_banner}

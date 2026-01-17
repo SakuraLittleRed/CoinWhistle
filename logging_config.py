@@ -10,7 +10,7 @@ from datetime import datetime
 def setup_logging(
     log_level: str = "INFO",
     log_dir: str = "logs",
-    app_name: str = "hawkeye"
+    app_name: str = "coinwhistle"
 ):
     """
     配置日志系统

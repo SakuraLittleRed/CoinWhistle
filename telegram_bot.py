@@ -21,7 +21,7 @@ from notifier import MultiUserNotifier
 from models import MarketType
 
 if TYPE_CHECKING:
-    from main import HawkEyeSystem
+    from main import CoinWhistleSystem
 
 
 class TelegramBot:
@@ -31,12 +31,12 @@ class TelegramBot:
         self.token = token
         self.notifier = notifier
         self.app: Optional[Application] = None
-        self.system: Optional['HawkEyeSystem'] = None
+        self.system: Optional['CoinWhistleSystem'] = None
         
         # 临时静音记录: {user_id: {symbol: unmute_time}}
         self.muted_symbols: Dict[str, Dict[str, datetime]] = {}
     
-    def set_system(self, system: 'HawkEyeSystem'):
+    def set_system(self, system: 'CoinWhistleSystem'):
         self.system = system
     
     async def start(self):
@@ -783,7 +783,7 @@ class TelegramBot:
         ]
         
         await update.message.reply_text(
-            f"🦅 <b>欢迎使用鹰眼监控系统 v1.3</b>\n\n"
+            f"🦅 <b>欢迎使用币哨监控系统 v1.3</b>\n\n"
             f"你好 <b>{user_config.username or '用户'}</b>！{reactivate_msg}\n\n"
             "📋 <b>快速开始:</b>\n"
             "• /menu - 控制面板\n"
@@ -809,7 +809,7 @@ class TelegramBot:
         ]
         
         help_text = """
-    🦅 <b>鹰眼监控系统 v1.3 - 帮助</b>
+    🦅 <b>币哨监控系统 v1.3 - 帮助</b>
     
     <b>📊 排行榜</b>
     /top - 排行榜菜单
@@ -858,7 +858,7 @@ class TelegramBot:
         effective_mode = user_config.get_effective_mode()
         
         await update.message.reply_text(
-            f"🦅 <b>鹰眼控制面板</b>\n\n"
+            f"🦅 <b>币哨控制面板</b>\n\n"
             f"<b>监控:</b> {user_config.watch_mode}\n"
             f"<b>灵敏度:</b> {user_config.profile.value}\n"
             f"<b>报警模式:</b> {effective_mode.value} {'🌙' if is_night else ''}\n"
@@ -1822,7 +1822,7 @@ class TelegramBot:
         effective_mode = user_config.get_effective_mode()
         
         await message.edit_text(
-            f"🦅 <b>鹰眼控制面板</b>\n\n"
+            f"🦅 <b>币哨控制面板</b>\n\n"
             f"<b>监控:</b> {user_config.watch_mode}\n"
             f"<b>灵敏度:</b> {user_config.profile.value}\n"
             f"<b>报警模式:</b> {effective_mode.value} {'🌙' if is_night else ''}\n"

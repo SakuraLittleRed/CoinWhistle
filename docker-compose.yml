@@ -1,19 +1,21 @@
 version: '3.8'
 
 services:
-  hawkeye:
+  coinwhistle:
     build: .
-    container_name: hawkeye-monitor
+    container_name: coinwhistle-monitor
     restart: unless-stopped
     environment:
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - ADMIN_USER_IDS=${ADMIN_USER_IDS}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - SMTP_HOST=${SMTP_HOST}
       - SMTP_PORT=${SMTP_PORT}
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASSWORD=${SMTP_PASSWORD}
     volumes:
       - ./data:/app/data
+      - ./logs:/app/logs
     logging:
       driver: "json-file"
       options:
